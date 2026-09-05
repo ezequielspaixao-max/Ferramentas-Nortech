@@ -2,13 +2,18 @@ package br.com.nortech.capacitores
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Paint
+import android.graphics.RectF
 import android.graphics.Typeface
 import android.graphics.pdf.PdfDocument
 import android.net.Uri
 import android.os.Bundle
+import android.util.Base64
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -18,6 +23,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -80,11 +87,34 @@ fun NortechApp() {
     }
 }
 
+private fun loadLogoBitmap(context: Context): Bitmap? = try {
+    val encoded = context.resources.openRawResource(R.raw.nortech_logo_b64)
+        .bufferedReader().use { it.readText().trim() }
+    val bytes = Base64.decode(encoded, Base64.DEFAULT)
+    BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+} catch (_: Exception) {
+    null
+}
+
 @Composable
 private fun BrandHeader() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
-        Text("NORTECH", color = NortechBlue, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineLarge)
-        Text("SERVIÇOS E COMÉRCIO LTDA", color = NortechOrange, fontWeight = FontWeight.Bold)
+    val context = LocalContext.current
+    val logo = remember { loadLogoBitmap(context) }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        if (logo != null) {
+            Image(
+                bitmap = logo.asImageBitmap(),
+                contentDescription = "Logo oficial NORTECH",
+                modifier = Modifier.fillMaxWidth().height(118.dp),
+                contentScale = ContentScale.Fit
+            )
+        } else {
+            Text("NORTECH", color = NortechBlue, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineLarge)
+            Text("SERVIÇOS E COMÉRCIO LTDA", color = NortechOrange, fontWeight = FontWeight.Bold)
+        }
     }
 }
 
@@ -96,9 +126,13 @@ private fun HomeScreen(open: (Screen) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         BrandHeader()
-        Text("Ferramentas Elétricas • v7", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = NortechBlue)
-        Text("Painel técnico para cálculos elétricos, pré-dimensionamento e memoriais de campo.")
-        Button(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(WHATSAPP_URL))) }, modifier = Modifier.fillMaxWidth()) {
+        Text("Ferramentas Elétricas • v8", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = NortechBlue)
+        Text("Painel técnico NORTECH para cálculos elétricos, pré-dimensionamento e memoriais de campo.")
+        Button(
+            onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(WHATSAPP_URL))) },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = NortechOrange)
+        ) {
             Text("WhatsApp: $WHATSAPP")
         }
         MenuCard("⚡ Banco de Capacitores", "Correção de FP, canais, controlador e PDF") { open(Screen.CAPACITOR) }
@@ -108,15 +142,20 @@ private fun HomeScreen(open: (Screen) -> Unit) {
         MenuCard("📊 Demanda", "Demanda em kW e kVA") { open(Screen.OTHER) }
         MenuCard("⚙️ Geradores", "Potência aparente e reserva") { open(Screen.OTHER) }
         MenuCard("🧾 Análise de Fatura", "Módulo em evolução") { open(Screen.OTHER) }
+        MenuCard("📈 Análise de Energia", "Módulo em evolução") { open(Screen.OTHER) }
+        HorizontalDivider()
         Text("Desenvolvido por Ezequiel Paixão", color = NortechBlue, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
 private fun MenuCard(title: String, subtitle: String, action: () -> Unit) {
-    ElevatedCard(colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant), modifier = Modifier.fillMaxWidth()) {
+    ElevatedCard(
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text(title, fontWeight = FontWeight.Bold)
+            Text(title, fontWeight = FontWeight.Bold, color = NortechBlue)
             Text(subtitle)
             Button(onClick = action, modifier = Modifier.fillMaxWidth()) { Text("ABRIR") }
         }
@@ -194,7 +233,7 @@ private fun CapacitorScreen(onBack: () -> Unit) {
                 val stages = (0 until channels).map { (base + if (it < rem) 1 else 0) * 5.0 }.filter { it > 0 }
                 result = CalcResult(qc, commercial, current, breaker, ct, fixed, tuning, stages)
                 error = null
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 error = "Revise os valores informados. O FP desejado deve ser maior que o FP atual."
             }
         }, modifier = Modifier.fillMaxWidth()) { Text("CALCULAR") }
@@ -235,7 +274,7 @@ private fun TransformerScreen(onBack: () -> Unit) {
     var vp by remember { mutableStateOf("13800") }
     var vs by remember { mutableStateOf("380") }
     var result by remember { mutableStateOf("") }
-    Column(Modifier.fillMaxSize().padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TextButton(onClick = onBack) { Text("← Voltar") }
         BrandHeader()
         Text("Transformadores", style = MaterialTheme.typography.headlineSmall, color = NortechBlue, fontWeight = FontWeight.Bold)
@@ -243,8 +282,12 @@ private fun TransformerScreen(onBack: () -> Unit) {
         NumField("Tensão primária (V)", vp) { vp = it }
         NumField("Tensão secundária (V)", vs) { vs = it }
         Button(onClick = {
-            val s = parse(kva) * 1000.0
-            result = "Primário: %.2f A\nSecundário: %.2f A".format(s / (sqrt(3.0) * parse(vp)), s / (sqrt(3.0) * parse(vs)))
+            try {
+                val s = parse(kva) * 1000.0
+                result = "Primário: %.2f A\nSecundário: %.2f A".format(s / (sqrt(3.0) * parse(vp)), s / (sqrt(3.0) * parse(vs)))
+            } catch (_: Exception) {
+                result = "Revise os valores informados."
+            }
         }) { Text("CALCULAR") }
         if (result.isNotBlank()) Text(result)
     }
@@ -279,12 +322,25 @@ private fun ResultLine(label: String, value: String) {
 }
 
 private fun parse(s: String) = s.trim().replace(',', '.').toDouble()
+
 private fun nextStandard(v: Double): Int {
     val values = listOf(6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,315,400,500,630,800,1000,1250,1600,2000)
     return values.firstOrNull { it >= v } ?: ceil(v / 100.0).toInt() * 100
 }
 
-private fun createPdf(context: Context, client: String, installation: String, controller: String, channels: Int, detuned: Boolean, r: CalcResult, p: String, fp1: String, fp2: String, v: String): Uri {
+private fun createPdf(
+    context: Context,
+    client: String,
+    installation: String,
+    controller: String,
+    channels: Int,
+    detuned: Boolean,
+    r: CalcResult,
+    p: String,
+    fp1: String,
+    fp2: String,
+    v: String
+): Uri {
     val doc = PdfDocument()
     val page = doc.startPage(PdfDocument.PageInfo.Builder(595, 842, 1).create())
     val c = page.canvas
@@ -292,10 +348,22 @@ private fun createPdf(context: Context, client: String, installation: String, co
     val orange = Paint().apply { color = android.graphics.Color.rgb(242,140,0); textSize = 12f; typeface = Typeface.DEFAULT_BOLD }
     val body = Paint().apply { color = android.graphics.Color.DKGRAY; textSize = 10f }
     val bold = Paint(body).apply { typeface = Typeface.DEFAULT_BOLD }
-    var y = 55f
-    c.drawText("NORTECH", 40f, y, blue); y += 20f
-    c.drawText("SERVIÇOS E COMÉRCIO LTDA", 40f, y, orange); y += 34f
-    c.drawText("MEMORIAL DE CÁLCULO - BANCO DE CAPACITORES", 40f, y, blue); y += 24f
+
+    var y = 35f
+    val logo = loadLogoBitmap(context)
+    if (logo != null) {
+        val targetW = 250f
+        val targetH = targetW * logo.height.toFloat() / logo.width.toFloat()
+        c.drawBitmap(logo, null, RectF(40f, y, 40f + targetW, y + targetH), null)
+        y += targetH + 24f
+    } else {
+        c.drawText("NORTECH", 40f, y + 20f, blue)
+        c.drawText("SERVIÇOS E COMÉRCIO LTDA", 40f, y + 40f, orange)
+        y += 65f
+    }
+
+    c.drawText("MEMORIAL DE CÁLCULO - BANCO DE CAPACITORES", 40f, y, blue)
+    y += 24f
     val created = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale("pt", "BR")).format(Date())
     val lines = listOf(
         "Data e hora de criação: $created",
@@ -313,14 +381,23 @@ private fun createPdf(context: Context, client: String, installation: String, co
         "Proteção sugerida*: ${r.breaker} A",
         "TC sugerido*: ${r.ct}/5 A"
     )
-    lines.forEach { c.drawText(it, 40f, y, if (it.startsWith("Banco comercial")) bold else body); y += 16f }
+    lines.forEach {
+        c.drawText(it, 40f, y, if (it.startsWith("Banco comercial")) bold else body)
+        y += 16f
+    }
     y += 8f
-    c.drawText("Estágios", 40f, y, blue); y += 18f
-    r.stages.forEachIndexed { i, kvar -> c.drawText("E${i+1}: %.0f kvar".format(kvar), 50f, y, body); y += 14f }
+    c.drawText("Estágios", 40f, y, blue)
+    y += 18f
+    r.stages.forEachIndexed { i, kvar ->
+        c.drawText("E${i + 1}: %.0f kvar".format(kvar), 50f, y, body)
+        y += 14f
+    }
     y += 12f
     c.drawText("* Pré-dimensionamento. Validar projeto, fabricante, curto-circuito, seletividade e harmônicos.", 40f, y, body)
+    c.drawText("NORTECH • Ferramentas Elétricas v8", 40f, 770f, orange)
     c.drawText("Desenvolvido por Ezequiel Paixão", 40f, 790f, blue)
     c.drawText("WhatsApp: $WHATSAPP | $WHATSAPP_URL", 40f, 810f, body)
+
     doc.finishPage(page)
     val dir = File(context.cacheDir, "reports").apply { mkdirs() }
     val file = File(dir, "NORTECH_Banco_${System.currentTimeMillis()}.pdf")
