@@ -1,4 +1,4 @@
-name: Gerar APK NORTECH
+name: Gerar APK KP Electrical Tools
 
 on:
   workflow_dispatch:
@@ -35,15 +35,27 @@ jobs:
       - name: Compilar APK de teste
         run: gradle --no-daemon :app:assembleDebug
 
-      - name: Renomear APK
+      - name: Preparar APK e pasta compactada
         run: |
-          mkdir -p output
-          cp app/build/outputs/apk/debug/app-debug.apk output/NORTECH-Ferramentas-v10-BETA.apk
+          mkdir -p output/package
+          cp app/build/outputs/apk/debug/app-debug.apk output/KP-Electrical-Tools-BETA-v1.apk
+          cp output/KP-Electrical-Tools-BETA-v1.apk output/package/
+          printf 'KP Electrical Tools - BETA v1.0\nby NORTECH\nPrecisão elétrica para decisões melhores.\nLimite desta versão: 30 acessos.\n' > output/package/LEIA-ME.txt
+          cd output/package
+          zip -r ../KP-Electrical-Tools-BETA-v1.zip .
 
-      - name: Disponibilizar APK
+      - name: Disponibilizar APK direto
         uses: actions/upload-artifact@v4
         with:
-          name: NORTECH-Ferramentas-v10-BETA-APK
-          path: output/NORTECH-Ferramentas-v10-BETA.apk
+          name: KP-Electrical-Tools-BETA-v1-APK
+          path: output/KP-Electrical-Tools-BETA-v1.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Disponibilizar ZIP compactado
+        uses: actions/upload-artifact@v4
+        with:
+          name: KP-Electrical-Tools-BETA-v1-ZIP
+          path: output/KP-Electrical-Tools-BETA-v1.zip
           if-no-files-found: error
           retention-days: 30
