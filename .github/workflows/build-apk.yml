@@ -38,24 +38,24 @@ jobs:
       - name: Preparar APK e pasta compactada
         run: |
           mkdir -p output/package
-          cp app/build/outputs/apk/debug/app-debug.apk output/KP-Electrical-Tools-BETA-v1.apk
-          cp output/KP-Electrical-Tools-BETA-v1.apk output/package/
-          printf 'KP Electrical Tools - BETA v1.0\nby NORTECH\nPrecisão elétrica para decisões melhores.\nLimite desta versão: 30 acessos.\n' > output/package/LEIA-ME.txt
+          cp app/build/outputs/apk/debug/app-debug.apk output/KP-Electrical-Tools-BETA-v1.1.apk
+          cp output/KP-Electrical-Tools-BETA-v1.1.apk output/package/
+          printf 'KP Electrical Tools - BETA v1.1\nby NORTECH\nPrecisão elétrica para decisões melhores.\nLayout baseado no modelo visual aprovado.\nLimite desta versão: 30 acessos.\n' > output/package/LEIA-ME.txt
           cd output/package
-          zip -r ../KP-Electrical-Tools-BETA-v1.zip .
+          zip -r ../KP-Electrical-Tools-BETA-v1.1.zip .
 
       - name: Disponibilizar APK direto
         uses: actions/upload-artifact@v4
         with:
-          name: KP-Electrical-Tools-BETA-v1-APK
-          path: output/KP-Electrical-Tools-BETA-v1.apk
+          name: KP-Electrical-Tools-BETA-v1.1-APK
+          path: output/KP-Electrical-Tools-BETA-v1.1.apk
           if-no-files-found: error
           retention-days: 30
 
       - name: Disponibilizar ZIP compactado
         uses: actions/upload-artifact@v4
         with:
-          name: KP-Electrical-Tools-BETA-v1-ZIP
-          path: output/KP-Electrical-Tools-BETA-v1.zip
+          name: KP-Electrical-Tools-BETA-v1.1-ZIP
+          path: output/KP-Electrical-Tools-BETA-v1.1.zip
           if-no-files-found: error
           retention-days: 30
