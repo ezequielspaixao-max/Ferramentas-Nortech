@@ -25,7 +25,7 @@ jobs:
       - name: Instalar Android API 37
         run: |
           yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platform-tools" "platforms;android-37" "build-tools;36.0.0"
+          sdkmanager --channel=3 "platform-tools" "platforms;android-37" "build-tools;36.0.0"
 
       - name: Configurar Gradle 9.5
         uses: gradle/actions/setup-gradle@v4
