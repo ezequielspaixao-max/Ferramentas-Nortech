@@ -22,9 +22,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import java.io.File
 import java.io.FileOutputStream
@@ -44,6 +47,84 @@ val NortechScheme = lightColorScheme(
     surfaceVariant = Color(0xFFF4F7FB),
     outline = Color(0xFFD7DFEA)
 )
+
+val NortechTypography = Typography(
+    displaySmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 30.sp,
+        lineHeight = 36.sp,
+        letterSpacing = 0.sp
+    ),
+    headlineLarge = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.ExtraBold,
+        fontSize = 28.sp,
+        lineHeight = 34.sp
+    ),
+    headlineMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        lineHeight = 30.sp
+    ),
+    headlineSmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 21.sp,
+        lineHeight = 27.sp
+    ),
+    titleLarge = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 19.sp,
+        lineHeight = 25.sp
+    ),
+    titleMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 17.sp,
+        lineHeight = 23.sp
+    ),
+    titleSmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 15.sp,
+        lineHeight = 21.sp
+    ),
+    bodyLarge = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 23.sp
+    ),
+    bodyMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = 15.sp,
+        lineHeight = 21.sp
+    ),
+    bodySmall = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Normal,
+        fontSize = 13.sp,
+        lineHeight = 18.sp
+    ),
+    labelLarge = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.Bold,
+        fontSize = 15.sp,
+        lineHeight = 20.sp,
+        letterSpacing = 0.2.sp
+    ),
+    labelMedium = TextStyle(
+        fontFamily = FontFamily.SansSerif,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 13.sp,
+        lineHeight = 18.sp
+    )
+)
+
 const val WHATSAPP = "91 99181-5138"
 const val WHATSAPP_URL = "https://wa.me/5591991815138"
 const val APP_STATUS = "VERSÃO BETA"
@@ -74,8 +155,8 @@ fun BrandHeader() {
                 contentScale = ContentScale.Fit
             )
         } else {
-            Text("NORTECH", color = NortechBlue, fontWeight = FontWeight.ExtraBold, style = MaterialTheme.typography.headlineLarge)
-            Text("SERVIÇOS E COMÉRCIO LTDA", color = NortechOrange, fontWeight = FontWeight.Bold)
+            Text("NORTECH", color = NortechBlue, style = MaterialTheme.typography.headlineLarge)
+            Text("SERVIÇOS E COMÉRCIO LTDA", color = NortechOrange, style = MaterialTheme.typography.titleMedium)
         }
     }
 }
@@ -85,7 +166,8 @@ fun NumField(label: String, value: String, change: (String) -> Unit) {
     OutlinedTextField(
         value = value,
         onValueChange = change,
-        label = { Text(label) },
+        label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
+        textStyle = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -94,23 +176,30 @@ fun NumField(label: String, value: String, change: (String) -> Unit) {
 
 @Composable
 fun TextFieldN(label: String, value: String, change: (String) -> Unit) {
-    OutlinedTextField(value = value, onValueChange = change, label = { Text(label) }, modifier = Modifier.fillMaxWidth(), singleLine = true)
+    OutlinedTextField(
+        value = value,
+        onValueChange = change,
+        label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
+        textStyle = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true
+    )
 }
 
 @Composable
 fun ResultLine(label: String, value: String) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, modifier = Modifier.weight(1f))
+        Text(label, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.width(10.dp))
-        Text(value, fontWeight = FontWeight.Bold)
+        Text(value, style = MaterialTheme.typography.titleSmall, color = NortechBlue)
     }
 }
 
 @Composable
 fun SectionCard(title: String, content: @Composable ColumnScope.() -> Unit) {
     ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
-            Text(title, color = NortechBlue, fontWeight = FontWeight.Bold)
+        Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+            Text(title, color = NortechBlue, style = MaterialTheme.typography.titleLarge)
             content()
         }
     }
@@ -121,15 +210,15 @@ fun createTextReport(context: Context, title: String, lines: List<String>): Uri 
     var pageNo = 1
     var page = doc.startPage(PdfDocument.PageInfo.Builder(595, 842, pageNo).create())
     var canvas = page.canvas
-    val blue = Paint().apply { color = android.graphics.Color.rgb(18,61,116); textSize = 17f; typeface = Typeface.DEFAULT_BOLD }
-    val orange = Paint().apply { color = android.graphics.Color.rgb(242,140,0); textSize = 10f; typeface = Typeface.DEFAULT_BOLD }
-    val body = Paint().apply { color = android.graphics.Color.DKGRAY; textSize = 9.5f }
-    val small = Paint(body).apply { textSize = 8f }
+    val blue = Paint().apply { color = android.graphics.Color.rgb(18,61,116); textSize = 17f; typeface = Typeface.create("sans-serif", Typeface.BOLD) }
+    val orange = Paint().apply { color = android.graphics.Color.rgb(242,140,0); textSize = 10f; typeface = Typeface.create("sans-serif", Typeface.BOLD) }
+    val body = Paint().apply { color = android.graphics.Color.DKGRAY; textSize = 10.2f; typeface = Typeface.create("sans-serif", Typeface.NORMAL) }
+    val small = Paint(body).apply { textSize = 8.4f }
     val beta = Paint().apply {
         color = android.graphics.Color.rgb(180, 180, 180)
         alpha = 55
         textSize = 52f
-        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        typeface = Typeface.create("sans-serif", Typeface.BOLD)
         textAlign = Paint.Align.CENTER
     }
 
@@ -162,7 +251,7 @@ fun createTextReport(context: Context, title: String, lines: List<String>): Uri 
     }
     var y = header()
     for (raw in lines) {
-        val chunks = wrapText(raw, 90)
+        val chunks = wrapText(raw, 86)
         for (line in chunks) {
             if (y > 785f) {
                 footer(); doc.finishPage(page)
@@ -172,9 +261,9 @@ fun createTextReport(context: Context, title: String, lines: List<String>): Uri 
                 y = header()
             }
             canvas.drawText(line, 38f, y, body)
-            y += 14f
+            y += 15f
         }
-        y += 2f
+        y += 3f
     }
     footer(); doc.finishPage(page)
     val dir = File(context.cacheDir, "reports").apply { mkdirs() }
