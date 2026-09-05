@@ -10,10 +10,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.delay
 import kotlin.math.*
 
 class MainActivity : ComponentActivity() {
@@ -29,6 +32,16 @@ data class CalcResult(val qc:Double,val commercial:Double,val current:Double,val
 
 @Composable
 fun NortechApp() {
+    var showSplash by remember { mutableStateOf(true) }
+    if (showSplash) {
+        LaunchedEffect(Unit) {
+            delay(2200)
+            showSplash = false
+        }
+        BetaSplashScreen()
+        return
+    }
+
     var screen by remember { mutableStateOf(Screen.HOME) }
     when(screen){
         Screen.HOME -> HomeScreen { screen=it }
@@ -44,12 +57,54 @@ fun NortechApp() {
 }
 
 @Composable
+private fun BetaSplashScreen() {
+    Column(
+        modifier = Modifier.fillMaxSize().padding(horizontal = 28.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        BrandHeader()
+        Spacer(Modifier.height(18.dp))
+        Text(
+            "NORTECH FERRAMENTAS ELÉTRICAS",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.ExtraBold,
+            color = NortechBlue,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(8.dp))
+        Surface(color = NortechOrange, shape = MaterialTheme.shapes.large) {
+            Text(
+                "VERSÃO BETA",
+                modifier = Modifier.padding(horizontal = 22.dp, vertical = 10.dp),
+                color = androidx.compose.ui.graphics.Color.White,
+                fontWeight = FontWeight.ExtraBold
+            )
+        }
+        Spacer(Modifier.height(14.dp))
+        Text(
+            "Versão em desenvolvimento e validação técnica. Confira os dados e resultados antes do uso em projeto executivo.",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            color = NortechBlue
+        )
+        Spacer(Modifier.height(22.dp))
+        Text("Desenvolvido por Ezequiel Paixão", fontWeight = FontWeight.Bold, color = NortechBlue)
+    }
+}
+
+@Composable
 private fun HomeScreen(open:(Screen)->Unit){
     val context=LocalContext.current
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp), verticalArrangement=Arrangement.spacedBy(12.dp)){
         BrandHeader()
-        Text("Ferramentas Elétricas • v9", style=MaterialTheme.typography.headlineSmall, fontWeight=FontWeight.Bold, color=NortechBlue)
-        Text("Suite técnica NORTECH para cálculos, análise de faturas e relatórios de campo.")
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("Ferramentas Elétricas • v10", style=MaterialTheme.typography.headlineSmall, fontWeight=FontWeight.Bold, color=NortechBlue)
+            Surface(color=NortechOrange, shape=MaterialTheme.shapes.medium) {
+                Text("BETA", modifier=Modifier.padding(horizontal=10.dp, vertical=5.dp), color=androidx.compose.ui.graphics.Color.White, fontWeight=FontWeight.Bold)
+            }
+        }
+        Text("Suite técnica NORTECH para cálculos, análise de faturas e relatórios de campo.", style=MaterialTheme.typography.bodyLarge)
         Button(onClick={context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(WHATSAPP_URL)))},modifier=Modifier.fillMaxWidth(),colors=ButtonDefaults.buttonColors(containerColor=NortechOrange)){Text("WhatsApp: $WHATSAPP")}
         menu("⚡ Banco de Capacitores","Correção de FP, estágios, proteção e PDF"){open(Screen.CAPACITOR)}
         menu("🔌 Transformadores","Correntes, carregamento e capacidade disponível"){open(Screen.TRANSFORMER)}
@@ -59,19 +114,20 @@ private fun HomeScreen(open:(Screen)->Unit){
         menu("⚙️ Geradores","Carga, reserva e partida de motores"){open(Screen.GENERATOR)}
         menu("🧾 Análise de Faturas","Upload de PDFs/imagens, OCR e relatório"){open(Screen.INVOICE)}
         menu("📈 Análise de Energia","Tensão, corrente, FP, frequência e DHT"){open(Screen.ENERGY)}
+        OutlinedButton(onClick={ (context as? ComponentActivity)?.finishAffinity() },modifier=Modifier.fillMaxWidth()){Text("SAIR DO APLICATIVO")}
         HorizontalDivider(); Text("Desenvolvido por Ezequiel Paixão",color=NortechBlue,fontWeight=FontWeight.Bold)
     }
 }
 
 @Composable
-private fun menu(t:String,s:String,a:()->Unit){ ElevatedCard(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){Text(t,fontWeight=FontWeight.Bold,color=NortechBlue);Text(s);Button(onClick=a,modifier=Modifier.fillMaxWidth()){Text("ABRIR")}}}}
+private fun menu(t:String,s:String,a:()->Unit){ ElevatedCard(Modifier.fillMaxWidth()){Column(Modifier.padding(14.dp),verticalArrangement=Arrangement.spacedBy(6.dp)){Text(t,fontWeight=FontWeight.Bold,color=NortechBlue,style=MaterialTheme.typography.titleMedium);Text(s,style=MaterialTheme.typography.bodyMedium);Button(onClick=a,modifier=Modifier.fillMaxWidth()){Text("ABRIR MÓDULO")}}}}
 
 @Composable
 private fun CapacitorScreen(onBack:()->Unit){
     val context=LocalContext.current
     var client by remember{mutableStateOf("")};var installation by remember{mutableStateOf("")};var power by remember{mutableStateOf("500")};var fp1 by remember{mutableStateOf("0,80")};var fp2 by remember{mutableStateOf("0,98")};var voltage by remember{mutableStateOf("380")};var channels by remember{mutableStateOf(12)};var controller by remember{mutableStateOf("Trifásico")};var detuned by remember{mutableStateOf(false)};var reactor by remember{mutableStateOf("7")};var transformer by remember{mutableStateOf("750")};var fixedPct by remember{mutableStateOf("2")};var result by remember{mutableStateOf<CalcResult?>(null)};var error by remember{mutableStateOf("")}
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp),verticalArrangement=Arrangement.spacedBy(12.dp)){
-        TextButton(onClick=onBack){Text("← Voltar ao painel")};BrandHeader();Text("Banco de Capacitores",style=MaterialTheme.typography.headlineSmall,color=NortechBlue,fontWeight=FontWeight.Bold)
+        OutlinedButton(onClick=onBack,modifier=Modifier.fillMaxWidth()){Text("VOLTAR AO MENU PRINCIPAL")};BrandHeader();Text("Banco de Capacitores",style=MaterialTheme.typography.headlineSmall,color=NortechBlue,fontWeight=FontWeight.Bold)
         TextFieldN("Cliente",client){client=it};TextFieldN("Instalação / QGBT / Transformador",installation){installation=it};NumField("Potência ativa (kW)",power){power=it};NumField("FP atual",fp1){fp1=it};NumField("FP desejado",fp2){fp2=it};NumField("Tensão trifásica (V)",voltage){voltage=it}
         Row(horizontalArrangement=Arrangement.spacedBy(8.dp)){FilterChip(controller=="Monofásico",{controller="Monofásico"},{Text("Monofásico")});FilterChip(controller=="Trifásico",{controller="Trifásico"},{Text("Trifásico")})}
         Text("Canais",fontWeight=FontWeight.Bold);Row(horizontalArrangement=Arrangement.spacedBy(5.dp)){listOf(6,8,12,16,24).forEach{n->FilterChip(channels==n,{channels=n},{Text("$n")})}}
