@@ -35,22 +35,29 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-val NortechBlue = Color(0xFF123D74)
-val NortechNavy = Color(0xFF071C2F)
+val NortechBlue = Color(0xFF0A78C9)
+val NortechCyan = Color(0xFF21B6F3)
+val NortechNavy = Color(0xFF061A2D)
+val NortechNavy2 = Color(0xFF0A2945)
 val NortechOrange = Color(0xFFF28C00)
-val AppBackground = Color(0xFFEAF0F6)
-val AppSurface = Color(0xFFF7F9FC)
+val AppBackground = Color(0xFF061A2D)
+val AppSurface = Color(0xFF0B2A46)
+val AppSurface2 = Color(0xFF103553)
+val AppTextMuted = Color(0xFFB5C7D8)
 
-val NortechScheme = lightColorScheme(
+val NortechScheme = darkColorScheme(
     primary = NortechOrange,
     onPrimary = Color.White,
-    secondary = NortechBlue,
-    onSecondary = Color.White,
+    secondary = NortechCyan,
+    onSecondary = Color(0xFF03111D),
     background = AppBackground,
+    onBackground = Color.White,
     surface = AppSurface,
-    surfaceVariant = Color(0xFFDDE7F1),
-    onSurface = Color(0xFF172433),
-    outline = Color(0xFFB7C6D6)
+    onSurface = Color.White,
+    surfaceVariant = AppSurface2,
+    onSurfaceVariant = Color(0xFFD6E5F2),
+    outline = Color(0xFF2E5B7D),
+    error = Color(0xFFFF6B6B)
 )
 
 val NortechTypography = Typography(
@@ -71,7 +78,7 @@ val NortechTypography = Typography(
 const val APP_NAME = "KP Electrical Tools"
 const val APP_SUBTITLE = "by NORTECH"
 const val APP_SLOGAN = "Precisão elétrica para decisões melhores."
-const val APP_STATUS = "VERSÃO BETA v1.0"
+const val APP_STATUS = "VERSÃO BETA v1.1"
 const val WHATSAPP = "91 99181-5138"
 const val WHATSAPP_URL = "https://wa.me/5591991815138"
 
@@ -96,14 +103,26 @@ fun BrandHeader(compact: Boolean = false) {
             Image(
                 bitmap = logo.asImageBitmap(),
                 contentDescription = "Logo oficial NORTECH",
-                modifier = Modifier.fillMaxWidth().height(if (compact) 76.dp else 104.dp),
+                modifier = Modifier.fillMaxWidth().height(if (compact) 64.dp else 92.dp),
                 contentScale = ContentScale.Fit
             )
         } else {
-            Text("NORTECH", color = NortechBlue, style = MaterialTheme.typography.headlineLarge)
+            Text("NORTECH", color = Color.White, style = MaterialTheme.typography.headlineLarge)
         }
     }
 }
+
+private val darkFieldColors @Composable get() = OutlinedTextFieldDefaults.colors(
+    focusedTextColor = Color.White,
+    unfocusedTextColor = Color.White,
+    focusedLabelColor = NortechCyan,
+    unfocusedLabelColor = AppTextMuted,
+    cursorColor = NortechOrange,
+    focusedBorderColor = NortechCyan,
+    unfocusedBorderColor = Color(0xFF2E5B7D),
+    focusedContainerColor = AppSurface2,
+    unfocusedContainerColor = AppSurface2
+)
 
 @Composable
 fun NumField(label: String, value: String, change: (String) -> Unit) {
@@ -112,6 +131,7 @@ fun NumField(label: String, value: String, change: (String) -> Unit) {
         label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
         textStyle = MaterialTheme.typography.bodyLarge,
         modifier = Modifier.fillMaxWidth(), singleLine = true,
+        colors = darkFieldColors,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
     )
 }
@@ -122,24 +142,25 @@ fun TextFieldN(label: String, value: String, change: (String) -> Unit) {
         value = value, onValueChange = change,
         label = { Text(label, style = MaterialTheme.typography.bodyMedium) },
         textStyle = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier.fillMaxWidth(), singleLine = true
+        modifier = Modifier.fillMaxWidth(), singleLine = true,
+        colors = darkFieldColors
     )
 }
 
 @Composable
 fun ResultLine(label: String, value: String) {
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(label, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
+        Text(label, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium, color = AppTextMuted)
         Spacer(Modifier.width(10.dp))
-        Text(value, style = MaterialTheme.typography.titleSmall, color = NortechBlue)
+        Text(value, style = MaterialTheme.typography.titleSmall, color = Color.White)
     }
 }
 
 @Composable
 fun SectionCard(title: String, content: @Composable ColumnScope.() -> Unit) {
-    ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = AppSurface)) {
+    ElevatedCard(modifier = Modifier.fillMaxWidth(), colors = CardDefaults.elevatedCardColors(containerColor = AppSurface2)) {
         Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
-            Text(title, color = NortechBlue, style = MaterialTheme.typography.titleLarge)
+            Text(title, color = NortechCyan, style = MaterialTheme.typography.titleLarge)
             content()
         }
     }
