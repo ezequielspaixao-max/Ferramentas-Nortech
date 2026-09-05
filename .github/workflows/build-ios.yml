@@ -1,0 +1,45 @@
+name: Compilar KP Electrical Tools iOS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "ios/**"
+      - ".github/workflows/build-ios.yml"
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Baixar projeto
+        uses: actions/checkout@v4
+
+      - name: Mostrar Xcode
+        run: xcodebuild -version
+
+      - name: Compilar para simulador iOS
+        run: |
+          mkdir -p output
+          xcodebuild \
+            -project ios/KPElectricalTools/KPElectricalTools.xcodeproj \
+            -target KPElectricalTools \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            CODE_SIGNING_ALLOWED=NO \
+            CONFIGURATION_BUILD_DIR="$PWD/output" \
+            build
+
+      - name: Compactar app do simulador
+        run: |
+          cd output
+          zip -r KP-Electrical-Tools-iOS-BETA-v1.0-Simulator.zip KPElectricalTools.app
+
+      - name: Disponibilizar build de teste iOS
+        uses: actions/upload-artifact@v4
+        with:
+          name: KP-Electrical-Tools-iOS-BETA-v1.0-Simulator
+          path: output/KP-Electrical-Tools-iOS-BETA-v1.0-Simulator.zip
+          if-no-files-found: error
+          retention-days: 30
