@@ -3,6 +3,8 @@
     <application
         android:allowBackup="true"
         android:label="Nortech Ferramentas Elétricas"
+        android:icon="@drawable/nortech_app_icon"
+        android:roundIcon="@drawable/nortech_app_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.NortechCapacitores">
 
