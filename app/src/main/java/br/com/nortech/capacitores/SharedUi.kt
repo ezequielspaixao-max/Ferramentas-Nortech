@@ -46,6 +46,7 @@ val NortechScheme = lightColorScheme(
 )
 const val WHATSAPP = "91 99181-5138"
 const val WHATSAPP_URL = "https://wa.me/5591991815138"
+const val APP_STATUS = "VERSÃO BETA"
 
 fun parseNumber(s: String): Double {
     val clean = s.trim().replace("R$", "").replace(" ", "")
@@ -124,7 +125,23 @@ fun createTextReport(context: Context, title: String, lines: List<String>): Uri 
     val orange = Paint().apply { color = android.graphics.Color.rgb(242,140,0); textSize = 10f; typeface = Typeface.DEFAULT_BOLD }
     val body = Paint().apply { color = android.graphics.Color.DKGRAY; textSize = 9.5f }
     val small = Paint(body).apply { textSize = 8f }
+    val beta = Paint().apply {
+        color = android.graphics.Color.rgb(180, 180, 180)
+        alpha = 55
+        textSize = 52f
+        typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
+        textAlign = Paint.Align.CENTER
+    }
+
+    fun drawBetaWatermark() {
+        canvas.save()
+        canvas.rotate(-32f, 297.5f, 421f)
+        canvas.drawText(APP_STATUS, 297.5f, 421f, beta)
+        canvas.restore()
+    }
+
     fun header(): Float {
+        drawBetaWatermark()
         var y = 28f
         loadLogoBitmap(context)?.let { logo ->
             val w = 220f
@@ -136,10 +153,11 @@ fun createTextReport(context: Context, title: String, lines: List<String>): Uri 
         y += 22f
         val date = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale("pt", "BR")).format(Date())
         canvas.drawText("Emitido em: $date", 38f, y, small)
+        canvas.drawText(APP_STATUS, 500f, y, orange)
         return y + 20f
     }
     fun footer() {
-        canvas.drawText("NORTECH • Desenvolvido por Ezequiel Paixão • WhatsApp $WHATSAPP", 38f, 810f, orange)
+        canvas.drawText("NORTECH • $APP_STATUS • Desenvolvido por Ezequiel Paixão • WhatsApp $WHATSAPP", 38f, 810f, orange)
         canvas.drawText("Página $pageNo", 515f, 810f, small)
     }
     var y = header()
