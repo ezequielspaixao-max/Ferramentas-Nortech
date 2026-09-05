@@ -12,8 +12,8 @@ android {
         applicationId = "br.com.nortech.capacitores"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
-        versionName = "9.0"
+        versionCode = 10
+        versionName = "10.0-beta"
     }
 
     buildFeatures { compose = true }
