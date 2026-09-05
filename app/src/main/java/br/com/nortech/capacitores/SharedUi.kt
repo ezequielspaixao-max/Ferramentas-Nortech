@@ -54,18 +54,18 @@ val NortechScheme = lightColorScheme(
 )
 
 val NortechTypography = Typography(
-    displaySmall = TextStyle(FontFamily.SansSerif, FontWeight.ExtraBold, 30.sp, 36.sp),
-    headlineLarge = TextStyle(FontFamily.SansSerif, FontWeight.ExtraBold, 28.sp, 34.sp),
-    headlineMedium = TextStyle(FontFamily.SansSerif, FontWeight.Bold, 24.sp, 30.sp),
-    headlineSmall = TextStyle(FontFamily.SansSerif, FontWeight.Bold, 21.sp, 27.sp),
-    titleLarge = TextStyle(FontFamily.SansSerif, FontWeight.Bold, 19.sp, 25.sp),
-    titleMedium = TextStyle(FontFamily.SansSerif, FontWeight.SemiBold, 17.sp, 23.sp),
-    titleSmall = TextStyle(FontFamily.SansSerif, FontWeight.SemiBold, 15.sp, 21.sp),
-    bodyLarge = TextStyle(FontFamily.SansSerif, FontWeight.Normal, 16.sp, 23.sp),
-    bodyMedium = TextStyle(FontFamily.SansSerif, FontWeight.Normal, 15.sp, 21.sp),
-    bodySmall = TextStyle(FontFamily.SansSerif, FontWeight.Normal, 13.sp, 18.sp),
-    labelLarge = TextStyle(FontFamily.SansSerif, FontWeight.Bold, 15.sp, 20.sp, 0.2.sp),
-    labelMedium = TextStyle(FontFamily.SansSerif, FontWeight.SemiBold, 13.sp, 18.sp)
+    displaySmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.ExtraBold, fontSize = 30.sp, lineHeight = 36.sp),
+    headlineLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.ExtraBold, fontSize = 28.sp, lineHeight = 34.sp),
+    headlineMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 24.sp, lineHeight = 30.sp),
+    headlineSmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 21.sp, lineHeight = 27.sp),
+    titleLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 19.sp, lineHeight = 25.sp),
+    titleMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.SemiBold, fontSize = 17.sp, lineHeight = 23.sp),
+    titleSmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.SemiBold, fontSize = 15.sp, lineHeight = 21.sp),
+    bodyLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 23.sp),
+    bodyMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 15.sp, lineHeight = 21.sp),
+    bodySmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Normal, fontSize = 13.sp, lineHeight = 18.sp),
+    labelLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 15.sp, lineHeight = 20.sp, letterSpacing = 0.2.sp),
+    labelMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, lineHeight = 18.sp)
 )
 
 const val APP_NAME = "KP Electrical Tools"
