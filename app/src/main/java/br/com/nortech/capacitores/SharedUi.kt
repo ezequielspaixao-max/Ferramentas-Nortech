@@ -47,7 +47,10 @@ val NortechScheme = lightColorScheme(
 const val WHATSAPP = "91 99181-5138"
 const val WHATSAPP_URL = "https://wa.me/5591991815138"
 
-fun parseNumber(s: String): Double = s.trim().replace(".", "").replace(',', '.').toDouble()
+fun parseNumber(s: String): Double {
+    val clean = s.trim().replace("R$", "").replace(" ", "")
+    return if (clean.contains(',')) clean.replace(".", "").replace(',', '.').toDouble() else clean.toDouble()
+}
 fun fmt(v: Double, decimals: Int = 2): String = "% .${decimals}f".format(Locale("pt", "BR"), v).trim()
 
 fun loadLogoBitmap(context: Context): Bitmap? = try {
