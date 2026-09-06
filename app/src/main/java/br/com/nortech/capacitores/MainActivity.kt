@@ -33,17 +33,11 @@ private const val PREF_ACCESS_COUNT = "access_count"
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val prefs = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        val previous = prefs.getInt(PREF_ACCESS_COUNT, 0)
-        val locked = previous >= MAX_BETA_ACCESSES
-        val used = if (locked) previous else previous + 1
-        if (!locked) prefs.edit().putInt(PREF_ACCESS_COUNT, used).apply()
-        val remaining = (MAX_BETA_ACCESSES - used).coerceAtLeast(0)
 
         setContent {
             MaterialTheme(colorScheme = NortechScheme, typography = NortechTypography) {
                 Surface(Modifier.fillMaxSize(), color = AppBackground) {
-                    if (locked) BetaLockedScreen() else KpElectricalToolsApp(remaining)
+                    KpElectricalToolsApp(MAX_BETA_ACCESSES)
                 }
             }
         }
@@ -126,11 +120,11 @@ private fun BetaSplashScreen(remainingAccesses: Int) {
             Text(APP_SLOGAN, style = MaterialTheme.typography.bodyLarge, color = AppTextMuted, textAlign = TextAlign.Center)
             Spacer(Modifier.height(28.dp))
             Surface(color = NortechOrange, shape = RoundedCornerShape(50)) {
-                Text(APP_STATUS, modifier = Modifier.padding(horizontal = 22.dp, vertical = 9.dp), color = Color.White, style = MaterialTheme.typography.titleSmall)
+                Text("VERSÃO v1.2 • SEM LIMITAÇÃO", modifier = Modifier.padding(horizontal = 22.dp, vertical = 9.dp), color = Color.White, style = MaterialTheme.typography.titleSmall)
             }
             Spacer(Modifier.height(12.dp))
             Text(
-                if (remainingAccesses == 0) "Último acesso liberado" else "Acessos restantes: $remainingAccesses de $MAX_BETA_ACCESSES",
+                "Uso sem limitação de acessos",
                 color = Color.White,
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -205,7 +199,7 @@ private fun HomeScreen(remainingAccesses: Int, open: (Screen) -> Unit) {
                     Text("Ferramentas para um futuro mais eficiente.", style = MaterialTheme.typography.bodySmall, color = AppTextMuted)
                 }
                 Surface(color = NortechOrange.copy(alpha = 0.16f), shape = RoundedCornerShape(12.dp)) {
-                    Text("BETA v1.1", modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp), color = NortechOrange, style = MaterialTheme.typography.labelMedium)
+                    Text("v1.2", modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp), color = NortechOrange, style = MaterialTheme.typography.labelMedium)
                 }
             }
 
@@ -214,8 +208,8 @@ private fun HomeScreen(remainingAccesses: Int, open: (Screen) -> Unit) {
 
             Surface(color = Color(0xFF0B3557), shape = RoundedCornerShape(14.dp)) {
                 Row(Modifier.fillMaxWidth().padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text("Licença de teste", color = NortechCyan, style = MaterialTheme.typography.titleSmall)
-                    Text(if (remainingAccesses == 0) "Último acesso" else "$remainingAccesses restantes", color = Color.White, style = MaterialTheme.typography.titleSmall)
+                    Text("Licença", color = NortechCyan, style = MaterialTheme.typography.titleSmall)
+                    Text("Sem limitação", color = Color.White, style = MaterialTheme.typography.titleSmall)
                 }
             }
 
